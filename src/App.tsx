@@ -1,10 +1,74 @@
-import React from "react";
+import { useState } from "react";
+import { Button, Container, Stack } from "react-bootstrap";
+import AddBudgerModel from "./components/AddBudgerModel";
+import AddExpenseModal from "./components/AddExpenseModal";
+import BudgetCard from "./components/BudgetCard";
+import TotalBudgetCard from "./components/TotalBudgetCard";
+import UncategorizedBudgetCard from "./components/UncategorizedBudgetCard";
+import { useBudgets } from "./contexts/BudgetsContext";
+import { Expense } from "./models/models";
 
 function App() {
+  const [showAddBudgetModal, setShowAddBudgetModal] = useState(false);
+  const [showAddExpenseModal, setShowAddExpenseModal] = useState(false);
+  const [addExpenseModalId, setAddExpenseModalId] = useState();
+  const { budgets, expenses, getBudgetExpenses } = useBudgets();
+
+  function openAddExpenseModal(budgetId: any) {
+    setShowAddExpenseModal(true);
+    setAddExpenseModalId(budgetId);
+  }
+
   return (
-    <div className="app">
-      <h1>Viktor</h1>
-    </div>
+    <>
+      <Container className="my-4">
+        <Stack direction="horizontal" gap={2} className="mb-4">
+          <h1 className="me-auto">Budgets</h1>
+          <Button variant="primary" onClick={() => setShowAddBudgetModal(true)}>
+            Add Budget
+          </Button>
+          <Button variant="outline-primary" onClick={openAddExpenseModal}>
+            Add Expense
+          </Button>
+        </Stack>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
+            gap: "1rem",
+            alignItems: "flex-start",
+          }}
+        >
+          {/* @ts-ignore */}
+          {budgets.map((budget) => {
+            const amount = getBudgetExpenses(budget.id).reduce(
+              (total: number, expense: Expense) => total + expense.amount,
+              0
+            );
+            return (
+              <BudgetCard
+                key={budget.id}
+                name={budget.name}
+                amount={amount}
+                max={budget.max}
+                onAddExpenseClick={() => openAddExpenseModal(budget.id)}
+              ></BudgetCard>
+            );
+          })}
+          <UncategorizedBudgetCard onAddExpenseClick={openAddExpenseModal} />
+          <TotalBudgetCard />
+        </div>
+      </Container>
+      <AddBudgerModel
+        show={showAddBudgetModal}
+        handleClose={() => setShowAddBudgetModal(false)}
+      />
+      <AddExpenseModal
+        show={showAddExpenseModal}
+        handleClose={() => setShowAddExpenseModal(false)}
+        defaultBudgetId={addExpenseModalId}
+      />
+    </>
   );
 }
 
