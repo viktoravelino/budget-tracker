@@ -1,27 +1,32 @@
-//@ts-nocheck
-import React, { useRef } from "react";
+import { FormEvent, useRef } from "react";
 import { Button, Form, Modal } from "react-bootstrap";
 import {
   UNCATEGORIZED_BUDGET_ID,
   useBudgets,
 } from "../contexts/BudgetsContext";
 
+interface AddExpenseModalProps {
+  show: boolean;
+  handleClose: () => void;
+  defaultBudgetId: string;
+}
+
 export default function AddExpenseModal({
   show,
   handleClose,
   defaultBudgetId,
-}) {
-  const descriptionRef = useRef();
-  const amountRef = useRef();
-  const budgetIdRef = useRef();
+}: AddExpenseModalProps) {
+  const descriptionRef = useRef<HTMLInputElement>();
+  const amountRef = useRef<HTMLInputElement>();
+  const budgetIdRef = useRef<HTMLSelectElement>();
 
   const { addExpense, budgets } = useBudgets();
 
-  function handleSubmit(e) {
+  function handleSubmit(e: FormEvent) {
     e.preventDefault();
     addExpense({
       description: descriptionRef.current.value,
-      amount: amountRef.current.value,
+      amount: parseFloat(amountRef.current.value),
       budgetId: budgetIdRef.current.value,
     });
     handleClose();

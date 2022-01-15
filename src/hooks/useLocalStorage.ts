@@ -1,10 +1,15 @@
-import { useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 
-export function useLocalStorage<T>(key: string, defaultValue: T) {
+type SetValue<T> = Dispatch<SetStateAction<T>>;
+
+export function useLocalStorage<T>(
+  key: string,
+  defaultValue: T
+): [T, SetValue<T>] {
   const [value, setValue] = useState<T>(() => {
     const jsonValue = localStorage.getItem(key);
     if (jsonValue !== null) {
-      return JSON.parse(jsonValue);
+      return JSON.parse(jsonValue) as T;
     }
 
     if (typeof defaultValue === "function") {

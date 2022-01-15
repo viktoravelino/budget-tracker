@@ -1,19 +1,26 @@
-//@ts-nocheck
-import React, { useRef } from "react";
+import { FormEvent, useRef } from "react";
 import { Button, Form, Modal } from "react-bootstrap";
 import { useBudgets } from "../contexts/BudgetsContext";
 
-export default function AddBudgerModel({ show, handleClose }) {
-  const nameRef = useRef();
-  const maxRef = useRef();
+interface AddBudgetModalProps {
+  show: boolean;
+  handleClose: () => void;
+}
+
+export default function AddBudgetModal({
+  show,
+  handleClose,
+}: AddBudgetModalProps) {
+  const nameRef = useRef<HTMLInputElement>();
+  const maxRef = useRef<HTMLInputElement>();
 
   const { addBudget } = useBudgets();
 
-  function handleSubmit(e) {
+  function handleSubmit(e: FormEvent) {
     e.preventDefault();
     addBudget({
       name: nameRef.current.value,
-      max: maxRef.current.value,
+      max: parseFloat(maxRef.current.value),
     });
     handleClose();
   }

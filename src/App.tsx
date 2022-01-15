@@ -1,20 +1,20 @@
 import { useState } from "react";
 import { Button, Container, Stack } from "react-bootstrap";
-import AddBudgerModel from "./components/AddBudgerModel";
+import AddBudgetModal from "./components/AddBudgetModal";
 import AddExpenseModal from "./components/AddExpenseModal";
 import BudgetCard from "./components/BudgetCard";
 import TotalBudgetCard from "./components/TotalBudgetCard";
 import UncategorizedBudgetCard from "./components/UncategorizedBudgetCard";
 import { useBudgets } from "./contexts/BudgetsContext";
-import { Expense } from "./models/models";
 
 function App() {
-  const [showAddBudgetModal, setShowAddBudgetModal] = useState(false);
-  const [showAddExpenseModal, setShowAddExpenseModal] = useState(false);
-  const [addExpenseModalId, setAddExpenseModalId] = useState();
-  const { budgets, expenses, getBudgetExpenses } = useBudgets();
+  const [showAddBudgetModal, setShowAddBudgetModal] = useState<boolean>(false);
+  const [showAddExpenseModal, setShowAddExpenseModal] =
+    useState<boolean>(false);
+  const [addExpenseModalId, setAddExpenseModalId] = useState<string>();
+  const { budgets, getBudgetExpenses } = useBudgets();
 
-  function openAddExpenseModal(budgetId: any) {
+  function openAddExpenseModal(budgetId?: string) {
     setShowAddExpenseModal(true);
     setAddExpenseModalId(budgetId);
   }
@@ -27,7 +27,10 @@ function App() {
           <Button variant="primary" onClick={() => setShowAddBudgetModal(true)}>
             Add Budget
           </Button>
-          <Button variant="outline-primary" onClick={openAddExpenseModal}>
+          <Button
+            variant="outline-primary"
+            onClick={() => openAddExpenseModal()}
+          >
             Add Expense
           </Button>
         </Stack>
@@ -39,10 +42,10 @@ function App() {
             alignItems: "flex-start",
           }}
         >
-          {/* @ts-ignore */}
-          {budgets.map((budget) => {
+          {budgets?.map((budget) => {
+            if (!getBudgetExpenses) return;
             const amount = getBudgetExpenses(budget.id).reduce(
-              (total: number, expense: Expense) => total + expense.amount,
+              (total, expense) => total + expense.amount,
               0
             );
             return (
@@ -59,7 +62,7 @@ function App() {
           <TotalBudgetCard />
         </div>
       </Container>
-      <AddBudgerModel
+      <AddBudgetModal
         show={showAddBudgetModal}
         handleClose={() => setShowAddBudgetModal(false)}
       />

@@ -1,11 +1,11 @@
 export interface Budget {
-  id: string;
+  id?: string;
   name: string;
   max: number;
 }
 
 export interface Expense {
-  id: string;
+  id?: string;
   budgetId: string;
   amount: number;
   description: string;

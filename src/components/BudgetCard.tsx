@@ -1,4 +1,3 @@
-import React from "react";
 import { Button, Card, ProgressBar, Stack } from "react-bootstrap";
 import { currencyFormatter } from "../utils";
 
@@ -8,7 +7,7 @@ interface BudgetCardProps {
   max: number;
   gray?: boolean;
   hideButtons?: boolean;
-  onAddExpenseClick: any;
+  onAddExpenseClick: () => void;
 }
 
 export default function BudgetCard({

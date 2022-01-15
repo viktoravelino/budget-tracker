@@ -1,4 +1,3 @@
-//@ts-nocheck
 import React, { useContext } from "react";
 import { v4 as uuid } from "uuid";
 import { useLocalStorage } from "../hooks/useLocalStorage";
@@ -16,15 +15,17 @@ interface BudgetsContextInterface {
 
 export const UNCATEGORIZED_BUDGET_ID = "Uncategorized";
 
-const BudgetsContext = React.createContext<BudgetsContextInterface>(null);
+const BudgetsContext = React.createContext<Partial<BudgetsContextInterface>>(
+  {}
+);
 
 export function useBudgets() {
   return useContext(BudgetsContext);
 }
 
 export function BudgetsProvider({ children }: any) {
-  const [budgets, setBudgets] = useLocalStorage("budgets", []);
-  const [expenses, setExpenses] = useLocalStorage("expenses", []);
+  const [budgets, setBudgets] = useLocalStorage<Budget[]>("budgets", []);
+  const [expenses, setExpenses] = useLocalStorage<Expense[]>("expenses", []);
 
   function getBudgetExpenses(budgetId: string) {
     return expenses.filter((expense) => expense.budgetId === budgetId);
@@ -62,8 +63,8 @@ export function BudgetsProvider({ children }: any) {
   return (
     <BudgetsContext.Provider
       value={{
-        budgets: budgets as Budget[],
-        expenses: expenses as Expense[],
+        budgets,
+        expenses,
         getBudgetExpenses,
         addExpense,
         addBudget,
