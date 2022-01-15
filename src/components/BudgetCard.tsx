@@ -8,6 +8,7 @@ interface BudgetCardProps {
   gray?: boolean;
   hideButtons?: boolean;
   onAddExpenseClick: () => void;
+  onViewExpensesClick: () => void;
 }
 
 export default function BudgetCard({
@@ -16,6 +17,7 @@ export default function BudgetCard({
   max,
   gray,
   onAddExpenseClick,
+  onViewExpensesClick,
   hideButtons,
 }: BudgetCardProps) {
   // Create a className array for the card's classes
@@ -60,7 +62,9 @@ export default function BudgetCard({
             >
               Add Expense
             </Button>
-            <Button variant="outline-secondary">View Expenses</Button>
+            <Button variant="outline-secondary" onClick={onViewExpensesClick}>
+              View Expenses
+            </Button>
           </Stack>
         )}
       </Card.Body>
